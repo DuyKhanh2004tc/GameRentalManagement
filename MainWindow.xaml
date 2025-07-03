@@ -12,17 +12,17 @@
             <StackPanel Margin="10">
                 <TextBlock Text="Dashboard" FontSize="20" Foreground="White" Margin="0 0 0 20"/>
 
-                <Button Content="Games" Margin="0 5" Click="GamesButton_Click" />
-                <Button Content="Customers" Margin="0 5" Click="CustomersButton_Click" />
-                <Button Content="Rentals" Margin="0 5" Click="RentalsButton_Click" />
-                <Button Content="Returns" Margin="0 5" Click="ReturnsButton_Click" />
-                <Button Content="Reports" Margin="0 5" Click="ReportsButton_Click" />
+                <Button Content="Games" Margin="0 5"  />
+                <Button Content="Customers" Margin="0 5"  />
+                <Button Content="Rentals" Margin="0 5"  />
+                <Button Content="Returns" Margin="0 5"  />
+                <Button Content="Reports" Margin="0 5"  />
 
                 <Button Content="Logout"
                         Margin="0 30 0 0"
                         Background="#ef4444"
                         Foreground="White"
-                        Click="LogoutButton_Click" />
+                         />
             </StackPanel>
         </Grid>
 

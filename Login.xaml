@@ -17,13 +17,13 @@
                 <TextBlock Text="Password" FontWeight="SemiBold" Margin="10 0 0 5"/>
                 <PasswordBox x:Name="txtPassword" Height="30" />
 
-                <Button Content="Login"
+                <Button Name="btn_Login" Content="Login"
                         Height="35"
                         Margin="0 20 0 0"
                         Background="#3b82f6"
                         Foreground="White"
-                        FontWeight="Bold"
-                        Click="LoginButton_Click"/>
+                        FontWeight="Bold" Click="btn_Login_Click" 
+                        />
 
                 <TextBlock x:Name="lblStatus"
                            Foreground="Red"
