@@ -14,11 +14,11 @@
 
         <StackPanel Grid.ColumnSpan="2">
             <TextBlock Text="Filter Games: " Margin="5" Width="250" />
-            <TextBox x:Name="txtFilter" Width="250" Margin="5" />
+            <TextBox x:Name="txtFilter" Width="250" Margin="5" TextChanged="txtFilter_TextChanged" />
         
         <Grid Width="400" Margin="0,10,0,0" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -30,7 +30,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Content="Game ID:" Margin="5" />
-            <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtGameId" Margin="5"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtGameId" Margin="5"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Name:" Margin="5" />
             <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtGameName" Margin="5" />
             <Label Grid.Row="2" Grid.Column="0" Content="Platform:" Margin="5" />
@@ -43,14 +43,14 @@
             <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtPrice" Margin="5"/>
         </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,10">
-            <Button x:Name="btnAdd" Content="Add" Width="80" Margin="5" />
-            <Button x:Name="btnEdit" Content="Edit" Width="80" Margin="5" />
-            <Button x:Name="btnDelete" Content="Delete" Width="80" Margin="5" />
-            <Button x:Name="btnReset" Content="Reset" Width="80" Margin="5" />
+            <Button x:Name="btnAdd" Content="Add" Width="80" Margin="5" Click="btnAdd_Click" />
+            <Button x:Name="btnEdit" Content="Edit" Width="80" Margin="5" Click="btnEdit_Click" />
+            <Button x:Name="btnDelete" Content="Delete" Width="80" Margin="5" Click="btnDelete_Click" />
+            <Button x:Name="btnReset" Content="Reset" Width="80" Margin="5" Click="btnReset_Click" />
         </StackPanel>
         <DataGrid x:Name="dgGameList" Height="300" AutoGenerateColumns="false" Margin="0,0,0,20">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Game ID" Binding="{Binding GameID}"/>
+                <DataGridTextColumn Header="Game ID" Binding="{Binding GameId}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding GameName}"/>
                 <DataGridTextColumn Header="Platform" Binding="{Binding Platform}"/>
                 <DataGridTextColumn Header="Genre" Binding="{Binding Genre}"/>
