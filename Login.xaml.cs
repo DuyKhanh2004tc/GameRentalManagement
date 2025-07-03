@@ -25,7 +25,7 @@ namespace GameRentalManagement
         GameRentalDbContext con = new GameRentalDbContext();
         public Login()
         {
-            GameRentalDbContext con = new GameRentalDbContext();
+            
             InitializeComponent();
         }
 
@@ -45,7 +45,7 @@ namespace GameRentalManagement
                 if (user != null)
                 {
                    
-                    MainWindow mainWindow = new MainWindow();
+                    MainWindow mainWindow = new MainWindow(user.UserId,user.Role);
                     mainWindow.Show();
                     MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     this.Close();
