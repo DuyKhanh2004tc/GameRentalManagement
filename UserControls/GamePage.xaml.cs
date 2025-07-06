@@ -26,6 +26,7 @@ namespace GameRentalManagement
         {
             InitializeComponent();
             LoadAllGames();
+            ClearForm();
         }
         private void LoadAllGames()
         {
@@ -63,7 +64,7 @@ namespace GameRentalManagement
                    string.IsNullOrWhiteSpace(txtGenre.Text) ||
                    string.IsNullOrWhiteSpace(txtQuantity.Text) ||
                    string.IsNullOrWhiteSpace(txtPrice.Text))
-                {;
+                {
                     MessageBox.Show("Please fill all of fields above, these fields must not be empty", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -80,6 +81,7 @@ namespace GameRentalManagement
                 con.SaveChanges();
                 MessageBox.Show("New game added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadAllGames();
+                ClearForm();
 
             }
             catch (Exception)
@@ -87,12 +89,73 @@ namespace GameRentalManagement
 
                
             }
+            
         }
 
+        private void ClearForm()
+        {
+            txtGameId.Text = "";
+            txtGameName.Text = "";
+            txtPlatform.Text = "";
+            txtGenre.Text = "";
+            txtPrice.Text = "";
+            txtQuantity.Text = "";
+        }
+        private void dgGameList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(dgGameList.SelectedItem is Game selectedGame)
+            {
+                txtGameId.Text = selectedGame.GameId.ToString();
+                txtGameName.Text = selectedGame.GameName;
+                txtPlatform.Text = selectedGame.Platform;
+                txtGenre.Text = selectedGame.Genre;
+                txtQuantity.Text = selectedGame.Quantity.ToString();
+                txtPrice.Text = selectedGame.PricePerDay.ToString();
+                
+            }
+        }
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
+            int id = 0;
+            if(dgGameList.SelectedItem is Game selectedGame)
+            {
+                id = selectedGame.GameId;
+            }
+            var game = con.Games.FirstOrDefault(g => g.GameId == id);
+            if (game == null)
+            {
+                MessageBox.Show("Game not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (txtGameName.Text.Trim().ToLower() != game.GameName.Trim().ToLower())
+            {
+                if (con.Games.Any(g => g.GameId != id && g.GameName.Trim().ToLower() == txtGameName.Text.Trim().ToLower()))
+                {
+                    MessageBox.Show("The game with the same name existed.", "Duplicate Name of Game", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(txtGameName.Text) ||
+                   string.IsNullOrWhiteSpace(txtPlatform.Text) ||
+                   string.IsNullOrWhiteSpace(txtGenre.Text) ||
+                   string.IsNullOrWhiteSpace(txtQuantity.Text) ||
+                   string.IsNullOrWhiteSpace(txtPrice.Text))
+            {
+                MessageBox.Show("Please fill all of fields above, these fields must not be empty", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
+            game.GameName = txtGameName.Text;
+            game.Platform = txtPlatform.Text;
+            game.Genre = txtGenre.Text;
+            game.Quantity = int.Parse(txtQuantity.Text);
+            game.PricePerDay = decimal.Parse(txtPrice.Text);
+            con.SaveChanges();
+            MessageBox.Show("This game updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoadAllGames();
+            ClearForm();
         }
+        
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
