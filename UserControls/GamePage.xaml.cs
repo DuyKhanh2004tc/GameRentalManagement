@@ -75,7 +75,7 @@ namespace GameRentalManagement
                     Genre = txtGenre.Text,
                     Quantity = int.Parse(txtQuantity.Text),
                     PricePerDay = decimal.Parse(txtPrice.Text),
-                    Status = false,
+                    Status = rbAvailable.IsChecked == true
                 };
                 con.Games.Add(newGame);
                 con.SaveChanges();
@@ -86,8 +86,8 @@ namespace GameRentalManagement
             }
             catch (Exception)
             {
+                MessageBox.Show("An error occurred while adding the game. Please check your input and try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-               
             }
             
         }
@@ -100,6 +100,8 @@ namespace GameRentalManagement
             txtGenre.Text = "";
             txtPrice.Text = "";
             txtQuantity.Text = "";
+            rbAvailable.IsChecked = true;
+            rbInactive.IsChecked = false;
         }
         private void dgGameList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -111,7 +113,9 @@ namespace GameRentalManagement
                 txtGenre.Text = selectedGame.Genre;
                 txtQuantity.Text = selectedGame.Quantity.ToString();
                 txtPrice.Text = selectedGame.PricePerDay.ToString();
-                
+                rbAvailable.IsChecked = selectedGame.Status == true;
+                rbInactive.IsChecked = selectedGame.Status == false;
+
             }
         }
         private void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -150,21 +154,69 @@ namespace GameRentalManagement
             game.Genre = txtGenre.Text;
             game.Quantity = int.Parse(txtQuantity.Text);
             game.PricePerDay = decimal.Parse(txtPrice.Text);
+            game.Status = rbAvailable.IsChecked == true;
             con.SaveChanges();
             MessageBox.Show("This game updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadAllGames();
             ClearForm();
         }
-        
+
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (dgGameList.SelectedItem is Game selectedGame)
+            {
+                try
+                {
+                    bool isCurrentlyRented = con.RentalDetails.Any(rd => rd.GameId == selectedGame.GameId && rd.Rental.Status == "Borrowed");
+                    if (isCurrentlyRented)
+                    {
+                        MessageBox.Show("This game is currently rented out and cannot be deleted.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    bool hasRentalHistory = con.RentalDetails.Any(rd => rd.GameId == selectedGame.GameId);
+                    if (hasRentalHistory)
+                    {
+                        MessageBoxResult result = MessageBox.Show("This game has already been rented before. Are you sure to Delete this game? Rental records containing this game may be lost." +
+                             "Click 'Yes' to delete the game or 'No' to mark it as inactive.", "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            var rentalDetails = con.RentalDetails.Where(rd => rd.GameId == selectedGame.GameId).ToList();
+                            con.RentalDetails.RemoveRange(rentalDetails);
+                            con.Games.Remove(selectedGame);
+                            con.SaveChanges();
+                            MessageBox.Show("Game deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadAllGames();
+                        }
 
+
+
+                    }
+                    else
+                    {
+                        con.Games.Remove(selectedGame);
+                        con.SaveChanges();
+                        MessageBox.Show("Game deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadAllGames();
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while deleting the game: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a game to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-
+            dgGameList.SelectedItem = null;
+            ClearForm();
         }
     }
 }

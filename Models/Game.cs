@@ -18,6 +18,12 @@ public partial class Game
     public int Quantity { get; set; }
 
     public bool Status { get; set; }
-
+    public String? GetStatus
+    {
+        get
+        {
+            return Status ? "Available" : "Not Available";
+        }
+    }
     public virtual ICollection<RentalDetail> RentalDetails { get; set; } = new List<RentalDetail>();
 }

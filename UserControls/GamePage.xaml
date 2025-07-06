@@ -28,7 +28,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Content="Game ID:" Margin="5" />
             <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtGameId" Margin="5"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Name:" Margin="5" />
@@ -41,7 +42,12 @@
             <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtQuantity" Margin="5"/>
             <Label Grid.Row="5" Grid.Column="0" Content="Price:" Margin="5"/>
             <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtPrice" Margin="5"/>
-        </Grid>
+            <Label Grid.Row="6" Grid.Column="0" Content="Status:" Margin="5"/>
+            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="5">
+                    <RadioButton x:Name="rbAvailable" Content="Available" IsChecked="True" Margin="0,0,10,0"/>
+                    <RadioButton x:Name="rbInactive" Content="Inactive"/>
+            </StackPanel>
+            </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,10">
             <Button x:Name="btnAdd" Content="Add" Width="80" Margin="5" Click="btnAdd_Click" />
             <Button x:Name="btnEdit" Content="Edit" Width="80" Margin="5" Click="btnEdit_Click" />
@@ -56,7 +62,8 @@
                 <DataGridTextColumn Header="Genre" Binding="{Binding Genre}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
                 <DataGridTextColumn Header="Price per day" Binding="{Binding PricePerDay}"/>
-            </DataGrid.Columns>
+                <DataGridTextColumn Header="Status" Binding="{Binding GetStatus}"/>
+                </DataGrid.Columns>
             
         </DataGrid>
         </StackPanel>
