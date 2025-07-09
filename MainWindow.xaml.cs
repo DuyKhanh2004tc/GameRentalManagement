@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameRentalManagement.Models;
+using GameRentalManagement.UserControls;
+
 
 namespace GameRentalManagement
 {
@@ -18,8 +20,8 @@ namespace GameRentalManagement
     public partial class MainWindow : Window
     {
         GameRentalDbContext con = new GameRentalDbContext();
-        private int currentUserId;
-        private string currentRole;
+        public int currentUserId;
+        public string currentRole;
         public MainWindow(int userId, string role)
         {
             currentUserId = userId;
@@ -30,6 +32,10 @@ namespace GameRentalManagement
         private void btn_Game_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new GamePage();
+        }
+        private void btn_Rental_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new RentalPage(currentUserId); ;
         }
     }
 }
