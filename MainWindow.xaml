@@ -13,7 +13,7 @@
                 <TextBlock Text="Dashboard" FontSize="20" Foreground="White" Margin="0 0 0 20"/>
 
                 <Button Name="btn_Game" Content="Games" Margin="0 5" Click="btn_Game_Click"   />
-                <Button Name="btn_Customer" Content="Customers" Margin="0 5"  />
+                <Button Name="btn_Customer" Content="Customers" Margin="0 5" Click="btn_Customer_Click"  />
                 <Button Name ="btn_Rental" Content="Rentals" Margin="0 5" Click="btn_Rental_Click" />
                 <Button Name="btn_Return" Content="Returns" Margin="0 5"  />
                 <Button Name="btn_Report" Content="Reports" Margin="0 5"  />

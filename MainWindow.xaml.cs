@@ -37,5 +37,10 @@ namespace GameRentalManagement
         {
             MainContent.Content = new RentalPage(currentUserId); ;
         }
+
+        private void btn_Customer_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new CustomerPage();
+        }
     }
 }

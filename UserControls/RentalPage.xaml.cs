@@ -74,5 +74,87 @@ namespace GameRentalManagement.UserControls
                 LoadAllRental(); 
             }
         }
+        private void btn_Returned_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = dgRentalList.SelectedItem as Rental;
+            if(selected != null && selected.Status == "Returned")
+            {
+                MessageBox.Show("This rental has already been returned.");
+                return;
+            }
+
+            if (selected != null && selected.ReturnDate == null)
+            {
+
+                selected.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
+                selected.Status = "Returned";
+                var rentalDetails = con.RentalDetails.Where(rd => rd.RentalId == selected.RentalId).ToList();
+                foreach (var detail in rentalDetails)
+                {
+                    var game = con.Games.FirstOrDefault(g => g.GameId == detail.GameId);
+                    if (game != null)
+                    {
+                        game.Quantity += detail.Quantity; 
+                    }
+                }
+                con.SaveChanges();
+                LoadAllRental();
+            }
+            else
+            {
+                MessageBox.Show("Please select a valid rental to mark as returned.");
+            }
+        }
+        private void btn_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = dgRentalList.SelectedItem as Rental;
+            if (selected != null && selected.Status == "Returned")
+            {
+                MessageBox.Show("Cannot cancel a rental that has already been returned.");
+                return;
+            }
+            if (selected != null)
+            {
+                var rentalDetails = con.RentalDetails.Where(rd => rd.RentalId == selected.RentalId).ToList();
+                var result = MessageBox.Show("Are you sure to cancel this rental? ", "Confirm cancel", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    foreach (var detail in rentalDetails)
+                    {
+                        var game = con.Games.FirstOrDefault(g => g.GameId == detail.GameId);
+                        if (game != null)
+                        {
+                            game.Quantity += detail.Quantity;
+                        }
+                        con.RentalDetails.Remove(detail);
+                    }
+                    con.Rentals.Remove(selected);
+                    con.SaveChanges();
+                    LoadAllRental();
+                }
+                
+            }
+            else
+            {
+                MessageBox.Show("Please select a rental to delete.");
+            }
+        }
+        private void btn_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            ClearRentalInfor();
+            LoadAllRental();
+        }
+        private void ClearRentalInfor()
+        {
+            txtRentalId.Text = string.Empty;
+            txtCustomerId.Text = string.Empty;
+            txtRentalDate.Text = string.Empty;
+            txtDueDate.Text = string.Empty;
+            txtReturnDate.Text = string.Empty;
+            txtStatus.Text = string.Empty;
+            txtProcessedBy.Text = string.Empty;
+            dgRentalDetails.ItemsSource = null;
+            txtTotalAmount.Text = string.Empty;
+        }
     }
 }

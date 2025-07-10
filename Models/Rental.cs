@@ -24,7 +24,7 @@ public partial class Rental
         get { return Customer.FullName; }
     }
     public virtual Customer Customer { get; set; } = null!;
-
+    
     public virtual User ProcessedByNavigation { get; set; } = null!;
     public string ? UserName
     {

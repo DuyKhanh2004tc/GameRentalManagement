@@ -5,6 +5,10 @@ namespace GameRentalManagement.Models;
 
 public partial class Customer
 {
+    public string IdAndName
+    {
+        get { return $"{CustomerId} - {FullName}"; }
+    }
     public int CustomerId { get; set; }
 
     public string FullName { get; set; } = null!;

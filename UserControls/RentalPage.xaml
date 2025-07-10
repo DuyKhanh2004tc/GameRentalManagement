@@ -87,10 +87,9 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="New Rental" Width="100" Margin="5" Click="btn_newRental_Click"/>
-                <Button Content="Mark as Returned" Width="120" Margin="5" />
-                <Button Content="Mark as Late" Width="100" Margin="5" />
-                <Button Content="Cancel Rental" Width="100" Margin="5" />
-                <Button Content="Refresh" Width="80" Margin="5" />
+                <Button Content="Mark as Returned" Width="120" Margin="5" Click="btn_Returned_Click"/>
+                <Button Content="Cancel Rental" Width="100" Margin="5" Click="btn_Cancel_Click"/>
+                <Button Content="Refresh" Width="80" Margin="5" Click="btn_Refresh_Click" />
             </StackPanel>
         </StackPanel>
     </Grid>
