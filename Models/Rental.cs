@@ -19,9 +19,20 @@ public partial class Rental
 
     public int ProcessedBy { get; set; }
 
+    public string ? CustomerName
+    {
+        get { return Customer.FullName; }
+    }
     public virtual Customer Customer { get; set; } = null!;
 
     public virtual User ProcessedByNavigation { get; set; } = null!;
+    public string ? UserName
+    {
+        get
+        {
+            return ProcessedByNavigation.Username;
+        }
+    }
 
     public virtual ICollection<RentalDetail> RentalDetails { get; set; } = new List<RentalDetail>();
 }

@@ -11,6 +11,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -27,7 +28,10 @@
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Due Date:" VerticalAlignment="Center"/>
         <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpDueDate" SelectedDate="{x:Static sys:DateTime.Now}" Margin="0,5"/>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,-64,0,76" Grid.Column="1" Grid.RowSpan="4">
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Quantity:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtQuantity" Margin="0,5"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,76" Grid.Column="1" Grid.RowSpan="5">
             <Button Content="Finish" Width="80" Margin="5" Click="btn_Finish_Click" Height="23"/>
         </StackPanel>
     </Grid>

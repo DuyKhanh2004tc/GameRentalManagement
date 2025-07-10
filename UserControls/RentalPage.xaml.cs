@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameRentalManagement.Models;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameRentalManagement.UserControls
 {
@@ -32,7 +33,7 @@ namespace GameRentalManagement.UserControls
         }
         private void LoadAllRental()
         {
-            var rentals = con.Rentals.ToList();
+            var rentals = con.Rentals.Include(r => r.Customer).Include(r => r.ProcessedByNavigation).ToList();
             foreach (var rental in rentals)
             {
                 if (rental.ReturnDate == null && rental.DueDate < DateOnly.FromDateTime(DateTime.Now) && rental.Status != "Overdue")
@@ -55,8 +56,14 @@ namespace GameRentalManagement.UserControls
                 txtDueDate.Text = selected.DueDate.ToString();
                 txtReturnDate.Text = selected.ReturnDate.ToString();
                 txtStatus.Text = selected.Status;
-                txtProcessedBy.Text = selected.ProcessedBy.ToString();
+                txtProcessedBy.Text = selected.UserName.ToString();
+                var rentalDetails = con.RentalDetails.Include(rd => rd.Game).Where(rd => rd.RentalId == selected.RentalId).ToList();
+
+                dgRentalDetails.ItemsSource = rentalDetails;
+                decimal total = rentalDetails.Sum(rd => rd.Quantity * rd.PriceAtRent);
+                txtTotalAmount.Text = $"{total}";
             }
+
         }
         private void btn_newRental_Click(object sender, RoutedEventArgs e)
         {

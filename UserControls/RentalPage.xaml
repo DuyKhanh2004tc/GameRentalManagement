@@ -12,7 +12,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Detail Panel -->
+        
         <GroupBox Header="Rental Information" Margin="0,0,0,10">
             <Grid Margin="10" IsEnabled="False" x:Name="rentalDetailPanel">
                 <Grid.ColumnDefinitions>
@@ -20,6 +20,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -49,10 +51,23 @@
 
                 <Label Grid.Row="6" Grid.Column="0" Content="Processed By:"/>
                 <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txtProcessedBy"/>
+
+                <Label Grid.Row="7" Grid.Column="0" Content="Rental Details:" VerticalAlignment="Top"/>
+                <DataGrid Grid.Row="7" Grid.Column="1" x:Name="dgRentalDetails" AutoGenerateColumns="False" Height="100" Margin="0,5,0,0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Game ID" Binding="{Binding GameId}" Width="*"/>
+                        <DataGridTextColumn Header="Game Name" Binding="{Binding Game.GameName}" Width="*"/>
+                        <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="*"/>
+                        <DataGridTextColumn Header="Price at Rent" Binding="{Binding PriceAtRent}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                    <Label Grid.Row="8" Grid.Column="0" Content="Total Price:" VerticalAlignment="Top"/>
+                    <TextBlock Grid.Row="8" Grid.Column="1" x:Name="txtTotalAmount"/>
+
             </Grid>
         </GroupBox>
 
-        <!-- DataGrid and Controls -->
+       
         <StackPanel Grid.Row="1">
             <DataGrid x:Name="dgRentalList"
                       AutoGenerateColumns="False"
@@ -61,11 +76,12 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Rental ID" Binding="{Binding RentalId}"/>
                     <DataGridTextColumn Header="Customer ID" Binding="{Binding CustomerId}"/>
+                    <DataGridTextColumn Header="Customer Name" Binding="{Binding CustomerName}"/>
                     <DataGridTextColumn Header="Rental Date" Binding="{Binding RentalDate}"/>
                     <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate}"/>
                     <DataGridTextColumn Header="Return Date" Binding="{Binding ReturnDate}"/>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
-                    <DataGridTextColumn Header="Processed By" Binding="{Binding ProcessedBy}"/>
+                    <DataGridTextColumn Header="Processed By" Binding="{Binding UserName}"/>
                 </DataGrid.Columns>
             </DataGrid>
 

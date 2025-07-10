@@ -49,8 +49,19 @@ namespace GameRentalManagement
                 MessageBox.Show("Selected Game is not available");
                 return;
             }
-            
-            
+            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity <= 0)
+            {
+                MessageBox.Show("Invalid quantity.");
+                return;
+            }
+
+            if (game.Quantity < quantity)
+            {
+                MessageBox.Show($"Not enough stock. Only {game.Quantity} available.");
+                return;
+            }
+
+
             Rental rental = new Rental
             {
                 CustomerId = customerId,
@@ -61,19 +72,19 @@ namespace GameRentalManagement
                 ProcessedBy = processedByUserId
             };
             con.Rentals.Add(rental);
-            con.SaveChanges(); 
+            con.SaveChanges();
 
-            
+
             RentalDetail rentalDetail = new RentalDetail
             {
                 RentalId = rental.RentalId,
                 GameId = gameId,
-                Quantity = 1,
+                Quantity = quantity,
                 PriceAtRent = game.PricePerDay
             };
             con.RentalDetails.Add(rentalDetail);
-            game.Quantity--;
-           
+            game.Quantity -= quantity;
+
             con.SaveChanges();
             MessageBox.Show("Rental created successfully!");
             this.DialogResult = true;
