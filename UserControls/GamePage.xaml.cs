@@ -114,7 +114,7 @@ namespace GameRentalManagement
                 txtQuantity.Text = selectedGame.Quantity.ToString();
                 txtPrice.Text = selectedGame.PricePerDay.ToString();
                 rbAvailable.IsChecked = selectedGame.Status == true;
-                rbInactive.IsChecked = selectedGame.Status == false;
+                rbInactive.IsChecked = selectedGame.Status == true;
 
             }
         }

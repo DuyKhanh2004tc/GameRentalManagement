@@ -18,6 +18,7 @@ public partial class Rental
     public string Status { get; set; } = null!;
 
     public int ProcessedBy { get; set; }
+    public decimal? TotalPrice { get; set; }
 
     public string ? CustomerName
     {

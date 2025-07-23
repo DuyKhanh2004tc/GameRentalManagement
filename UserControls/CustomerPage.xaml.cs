@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameRentalManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace GameRentalManagement.UserControls
 {
@@ -76,13 +78,44 @@ namespace GameRentalManagement.UserControls
                 MessageBox.Show("Please fill all the fields.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            string namePattern = @"^([\p{L}]+[\s]+){1,}[\p{L}]+$";
+            if (!Regex.IsMatch(txtFullName.Text.Trim(), namePattern))
+            {
+                MessageBox.Show("Full name must contain at least two words and only letters (Vietnamese supported).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            
+            string phonePattern = @"^0\d{9}$";
+            if (!Regex.IsMatch(txtPhone.Text.Trim(), phonePattern))
+            {
+                MessageBox.Show("Phone number is invalid. It should be 10 digits and start with 0.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(txtEmail.Text.Trim(), emailPattern))
+            {
+                MessageBox.Show("Email format is invalid.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            bool isExisted = con.Customers.Any(c =>
+                                c.FullName.Equals(txtFullName.Text.Trim()) &&
+                                c.Phone.Equals(txtPhone.Text.Trim()));
+
+            if (isExisted)
+            {
+                MessageBox.Show("Customer already exists.", "Duplicate Customer", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             Customer newCustomer = new Customer
             {
-                FullName = txtFullName.Text,
-                Phone = txtPhone.Text,
-                Email = txtEmail.Text,
-                Address = txtAddress.Text
+                FullName = txtFullName.Text.Trim(),
+                Phone = txtPhone.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                Address = txtAddress.Text.Trim()
             };
 
             con.Customers.Add(newCustomer);
@@ -95,6 +128,36 @@ namespace GameRentalManagement.UserControls
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (dgCustomerList.SelectedItem is not Customer selected) return;
+            if (string.IsNullOrWhiteSpace(txtFullName.Text) ||
+                string.IsNullOrWhiteSpace(txtPhone.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtAddress.Text))
+            {
+                MessageBox.Show("Please fill all the fields.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            string namePattern = @"^([\p{L}]+[\s]+){1,}[\p{L}]+$";
+            if (!Regex.IsMatch(txtFullName.Text.Trim(), namePattern))
+            {
+                MessageBox.Show("Full name must contain at least two words and only letters (Vietnamese supported).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            string phonePattern = @"^0\d{9}$";
+            if (!Regex.IsMatch(txtPhone.Text.Trim(), phonePattern))
+            {
+                MessageBox.Show("Phone number is invalid. It should be 10 digits and start with 0.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(txtEmail.Text.Trim(), emailPattern))
+            {
+                MessageBox.Show("Email format is invalid.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             var customer = con.Customers.FirstOrDefault(c => c.CustomerId == selected.CustomerId);
             if (customer == null)

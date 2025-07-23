@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameRentalManagement.Models;
 using GameRentalManagement.UserControls;
+using Microsoft.VisualBasic.ApplicationServices;
 
 
 namespace GameRentalManagement
@@ -27,20 +28,63 @@ namespace GameRentalManagement
             currentUserId = userId;
             currentRole = role;
             InitializeComponent();
+            WelcomeMessage();
+            AccessPermission();
+            
+        }
+        private void WelcomeMessage()
+        {
+            txtLoginStatus.Text = $"Login Successful! Welcome,Game Rental Store's {currentRole}";
+        }
+        private void AccessPermission()
+        {
+            
+
+            if (currentRole == "Admin")
+            {
+                txtAccessRights.Text = $"You have permission to manage information of: Rentals, Customers.";
+            }
+            else 
+            {
+                txtAccessRights.Text = $"You have permission to access to all features, include:Rentals, Customers, Reports, Accounts.";
+                btn_Account.Visibility = Visibility.Collapsed;
+            }
+            
+
+            
         }
 
         private void btn_Game_Click(object sender, RoutedEventArgs e)
         {
+            notification.Visibility = Visibility.Collapsed;
             MainContent.Content = new GamePage();
         }
         private void btn_Rental_Click(object sender, RoutedEventArgs e)
         {
+            notification.Visibility = Visibility.Collapsed;
             MainContent.Content = new RentalPage(currentUserId); ;
         }
 
         private void btn_Customer_Click(object sender, RoutedEventArgs e)
         {
+            notification.Visibility = Visibility.Collapsed;
             MainContent.Content = new CustomerPage();
+        }
+        private void btn_Account_Click(object sender, RoutedEventArgs e)
+        {
+            notification.Visibility = Visibility.Collapsed;
+            MainContent.Content = new AccountPage();
+        }
+        private void btn_Report_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new ReportPage(); 
+        }
+
+        private void btn_Logout_Click(object sender, RoutedEventArgs e)
+        {
+            Login loginWindow = new Login();
+            loginWindow.Show();
+            this.Close();
         }
     }
 }

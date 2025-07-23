@@ -60,8 +60,31 @@ namespace GameRentalManagement.UserControls
                 var rentalDetails = con.RentalDetails.Include(rd => rd.Game).Where(rd => rd.RentalId == selected.RentalId).ToList();
 
                 dgRentalDetails.ItemsSource = rentalDetails;
-                decimal total = rentalDetails.Sum(rd => rd.Quantity * rd.PriceAtRent);
-                txtTotalAmount.Text = $"{total}";
+                decimal baseTotal = rentalDetails.Sum(rd => rd.Quantity * rd.PriceAtRent);
+                decimal overdueFee = 0;
+                decimal total = baseTotal;
+
+                // Nếu đã trả và có TotalPrice thì hiển thị TotalPrice đã lưu
+                if (selected.Status == "Returned" && selected.TotalPrice.HasValue)
+                {
+                    total = selected.TotalPrice.Value;
+                }
+                else if (selected.ReturnDate == null)
+                {
+                    var today = DateOnly.FromDateTime(DateTime.Now);
+                    if (selected.DueDate < today)
+                    {
+                        int overdueDays = today.DayNumber - selected.DueDate.DayNumber;
+                        overdueFee = overdueDays * 5000;
+                        total += overdueFee;
+                    }
+                }
+
+                txtTotalAmount.Text = $"{baseTotal} VND";
+                if (overdueFee > 0)
+                {
+                    txtTotalAmount.Text += $" (+ {overdueFee} VND overdue fee)";
+                }
             }
 
         }
@@ -77,7 +100,7 @@ namespace GameRentalManagement.UserControls
         private void btn_Returned_Click(object sender, RoutedEventArgs e)
         {
             var selected = dgRentalList.SelectedItem as Rental;
-            if(selected != null && selected.Status == "Returned")
+            if (selected != null && selected.Status == "Returned")
             {
                 MessageBox.Show("This rental has already been returned.");
                 return;
@@ -85,18 +108,34 @@ namespace GameRentalManagement.UserControls
 
             if (selected != null && selected.ReturnDate == null)
             {
-
                 selected.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
                 selected.Status = "Returned";
-                var rentalDetails = con.RentalDetails.Where(rd => rd.RentalId == selected.RentalId).ToList();
+
+                var rentalDetails = con.RentalDetails.Include(rd => rd.Game)
+                                                     .Where(rd => rd.RentalId == selected.RentalId)
+                                                     .ToList();
+
+                decimal total = rentalDetails.Sum(rd => rd.Quantity * rd.PriceAtRent);
+
+                // Tính phí trễ nếu ReturnDate > DueDate
+                if (selected.ReturnDate > selected.DueDate)
+                {
+                    int overdueDays = selected.ReturnDate.Value.DayNumber - selected.DueDate.DayNumber;
+                    decimal overdueFee = overdueDays * 5000;
+                    total += overdueFee;
+                }
+
+                selected.TotalPrice = total;
+
                 foreach (var detail in rentalDetails)
                 {
                     var game = con.Games.FirstOrDefault(g => g.GameId == detail.GameId);
                     if (game != null)
                     {
-                        game.Quantity += detail.Quantity; 
+                        game.Quantity += detail.Quantity;
                     }
                 }
+
                 con.SaveChanges();
                 LoadAllRental();
             }

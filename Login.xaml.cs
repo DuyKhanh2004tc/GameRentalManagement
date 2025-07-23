@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameRentalManagement.Models;
+using GameRentalManagement.Utils;
 
 namespace GameRentalManagement
 {
@@ -34,20 +35,21 @@ namespace GameRentalManagement
         {
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Password.Trim();
+
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Username and Password cannot be empty.", "Login Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             try
             {
-                var user = con.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
-                if (user != null)
+                var user = con.Users.FirstOrDefault(u => u.Username == username);
+                if (user != null && PasswordEncryption.VerifyPassword(password, user.Password))
                 {
-                   
-                    MainWindow mainWindow = new MainWindow(user.UserId,user.Role);
+                    MainWindow mainWindow = new MainWindow(user.UserId, user.Role);
                     mainWindow.Show();
-                    MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
                     this.Close();
                 }
                 else
@@ -58,7 +60,8 @@ namespace GameRentalManagement
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while trying to log in: {ex.Message}", "Login Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            } 
+            }
         }
     }
+    
 }
