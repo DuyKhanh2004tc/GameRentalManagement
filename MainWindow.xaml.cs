@@ -77,6 +77,7 @@ namespace GameRentalManagement
         }
         private void btn_Report_Click(object sender, RoutedEventArgs e)
         {
+            notification.Visibility = Visibility.Collapsed;
             MainContent.Content = new ReportPage(); 
         }
 
