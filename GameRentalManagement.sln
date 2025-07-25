@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRentalManagement", "GameRentalManagement.csproj", "{13A182F3-6682-44AB-835C-EA30B7C6B60B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Testing", "..\Project Testing\Project Testing.csproj", "{C632AF95-350D-4F59-8DE8-C5739D59AAAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{13A182F3-6682-44AB-835C-EA30B7C6B60B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13A182F3-6682-44AB-835C-EA30B7C6B60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13A182F3-6682-44AB-835C-EA30B7C6B60B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C632AF95-350D-4F59-8DE8-C5739D59AAAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C632AF95-350D-4F59-8DE8-C5739D59AAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C632AF95-350D-4F59-8DE8-C5739D59AAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C632AF95-350D-4F59-8DE8-C5739D59AAAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

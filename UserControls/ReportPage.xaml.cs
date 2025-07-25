@@ -49,10 +49,11 @@ namespace GameRentalManagement.UserControls
                 return;
             }
 
-            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Report_Template_GameRental.xlsx");
+            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Report_Borrowed-Returned_GameRental.xlsx");
             string exportDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Reports");
             Directory.CreateDirectory(exportDir);
-            string exportPath = Path.Combine(exportDir, $"GameRental_Report_{month}_{year}.xlsx");
+            string exportPath = Path.Combine(exportDir, $"Report_Borrowed-Returned_GameRental_{month}_{year}.xlsx");
+
 
             FileInfo templateFile = new FileInfo(templatePath);
             FileInfo newFile = new FileInfo(exportPath);
@@ -172,5 +173,125 @@ namespace GameRentalManagement.UserControls
                 MessageBox.Show("Failed to export: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void ExportMonthlyReportWithSummary_Click(object sender, RoutedEventArgs e)
+        {
+            if (cbMonth.SelectedItem == null || string.IsNullOrWhiteSpace(txtYear.Text))
+            {
+                MessageBox.Show("Please select month and enter year.", "Missing Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!int.TryParse(txtYear.Text.Trim(), out int year))
+            {
+                MessageBox.Show("Invalid year format.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int month = int.Parse(((ComboBoxItem)cbMonth.SelectedItem).Content.ToString());
+
+            var rentals = con.Rentals
+                .Where(r => r.RentalDate.Month == month && r.RentalDate.Year == year)
+                .Include(r => r.RentalDetails)
+                .ThenInclude(d => d.Game)
+                .ToList();
+
+            if (rentals.Count == 0)
+            {
+                MessageBox.Show("No rentals found for the selected month and year.", "No Data", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Report_Borrowed-Returned_GameRental.xlsx");
+            string exportDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Reports");
+            Directory.CreateDirectory(exportDir);
+            string exportPath = Path.Combine(exportDir, $"Report_Borrowed-Returned_GameRental_{month}_{year}.xlsx");
+
+            FileInfo templateFile = new FileInfo(templatePath);
+            FileInfo newFile = new FileInfo(exportPath);
+
+            if (!templateFile.Exists)
+            {
+                MessageBox.Show("Template file not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (newFile.Exists) newFile.Delete();
+
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage(newFile, templateFile))
+                {
+                    var ws = package.Workbook.Worksheets[0];
+
+                    int startRow = 6;
+                    int currentRow = startRow;
+                    int no = 1;
+
+                    var groupedGames = rentals
+                        .SelectMany(r => r.RentalDetails)
+                        .GroupBy(d => d.Game)
+                        .Select(g => new
+                        {
+                            Game = g.Key,
+                            Borrowed = g.Sum(x => x.Quantity),
+                            Returned = g.Sum(x => x.Rental.ReturnDate != null ? x.Quantity : 0)
+                        })
+                        .ToList();
+
+                    int totalBorrowed = 0;
+                    int totalReturned = 0;
+
+                    foreach (var item in groupedGames)
+                    {
+                        ws.Cells[currentRow, 1].Value = no++; // No.
+                        ws.Cells[currentRow, 2].Value = item.Game.GameId;
+                        ws.Cells[currentRow, 3].Value = item.Game.GameName;
+                        ws.Cells[currentRow, 4].Value = item.Game.Genre;
+                        ws.Cells[currentRow, 5].Value = item.Game.Status ? "Available" : "Not Available";
+                        ws.Cells[currentRow, 6].Value = item.Game.Quantity;
+                        ws.Cells[currentRow, 7].Value = item.Borrowed;
+                        ws.Cells[currentRow, 8].Value = item.Returned;
+
+                        totalBorrowed += item.Borrowed;
+                        totalReturned += item.Returned;
+
+                        currentRow++;
+                    }
+
+                    // Ghi tổng cộng vào cột K (cột bên phải của "Total Borrowed:" tại cột J)
+                    for (int row = 1; row <= 100; row++)
+                    {
+                        var label = ws.Cells[row, 10].Text; // Column J
+                        if (label == "Total Borrowed:")
+                        {
+                            ws.Cells[row, 11].Value = totalBorrowed; // Column K
+                        }
+                        else if (label == "Total Returned:")
+                        {
+                            ws.Cells[row, 11].Value = totalReturned; // Column K
+                        }
+                    }
+
+                    package.Save();
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exportPath,
+                    UseShellExecute = true
+                });
+
+                txtStatus.Text = $"Exported to: {exportPath}";
+                MessageBox.Show("Monthly report exported successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to export: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
+
+
 }
