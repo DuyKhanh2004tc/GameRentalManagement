@@ -11,7 +11,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -19,20 +18,58 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Customer:" VerticalAlignment="Center"/>
-        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbCustomer" DisplayMemberPath="IdAndName" SelectedValuePath="CustomerId" Margin="0,5"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbCustomer"
+                  DisplayMemberPath="IdAndName"
+                  SelectedValuePath="CustomerId"
+                  Margin="0,5"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Game:" VerticalAlignment="Center"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbGame" DisplayMemberPath="GameName" SelectedValuePath="GameId" Margin="0,5"/>
+        
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Due Date:" VerticalAlignment="Center"/>
+        <DatePicker Grid.Row="1" Grid.Column="1" x:Name="dpDueDate"
+                    SelectedDate="{x:Static sys:DateTime.Now}"
+                    Margin="0,5"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Due Date:" VerticalAlignment="Center"/>
-        <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpDueDate" SelectedDate="{x:Static sys:DateTime.Now}" Margin="0,5"/>
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Game List:" VerticalAlignment="Top" Margin="0,5"/>
+        <DataGrid Grid.Row="2" Grid.Column="1" x:Name="dgGameList"
+                  AutoGenerateColumns="False" Height="250" Margin="0,5">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Select">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox Tag="{Binding GameId}"
+                                      Checked="CheckBox_Checked"
+                                      Unchecked="CheckBox_Unchecked"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Quantity:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtQuantity" Margin="0,5"/>
+                <DataGridTextColumn Header="Game ID" Binding="{Binding GameId}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding GameName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Genre" Binding="{Binding Genre}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Price/Day" Binding="{Binding PricePerDay}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding GetStatus}" IsReadOnly="True"/>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,76" Grid.Column="1" Grid.RowSpan="5">
-            <Button Content="Finish" Width="80" Margin="5" Click="btn_Finish_Click" Height="23"/>
+                <DataGridTemplateColumn Header="Rent Quantity">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Width="60" Tag="{Binding GameId}"
+                                     TextChanged="QuantityBox_TextChanged"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                    Grid.Row="3" Grid.ColumnSpan="2" Margin="0,10,0,0">
+            <Button Content="Finish" Width="80" Height="25"
+                    Margin="5" Click="btn_Finish_Click"/>
         </StackPanel>
     </Grid>
 </Window>
