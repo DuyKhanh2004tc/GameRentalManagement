@@ -23,7 +23,7 @@ namespace GameRentalManagement.UserControls
     /// <summary>
     /// Interaction logic for CustomerPage.xaml
     /// </summary>
-    
+
     public partial class CustomerPage : UserControl
     {
         GameRentalDbContext con = new GameRentalDbContext();
@@ -85,7 +85,7 @@ namespace GameRentalManagement.UserControls
                 return;
             }
 
-            
+
             string phonePattern = @"^0\d{9}$";
             if (!Regex.IsMatch(txtPhone.Text.Trim(), phonePattern))
             {
@@ -93,7 +93,7 @@ namespace GameRentalManagement.UserControls
                 return;
             }
 
-            
+
             string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             if (!Regex.IsMatch(txtEmail.Text.Trim(), emailPattern))
             {
@@ -204,7 +204,7 @@ namespace GameRentalManagement.UserControls
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             ClearForm();
         }
 

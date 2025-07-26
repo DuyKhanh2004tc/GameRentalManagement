@@ -133,11 +133,10 @@ namespace GameRentalManagement.UserControls
                 return;
             }
 
-            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Report_Borrowed-Returned_GameRental.xlsx");
+            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Report_Template_GameRental.xlsx");
             string exportDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Reports");
             Directory.CreateDirectory(exportDir);
-            string exportPath = Path.Combine(exportDir, $"Report_Borrowed-Returned_GameRental_{month}_{year}.xlsx");
-
+            string exportPath = Path.Combine(exportDir, $"GameRental_Report_{month}_{year}.xlsx");
 
             FileInfo templateFile = new FileInfo(templatePath);
             FileInfo newFile = new FileInfo(exportPath);
@@ -190,18 +189,18 @@ namespace GameRentalManagement.UserControls
                             ws.Cells[startRow, 5].Value = rental.Status;            
                             ws.Cells[startRow, 6].Value = rental.RentalId;          
                             ws.Cells[startRow, 7].Value = detail.Game.GameName;     
-                            ws.Cells[startRow, 8].Value = rental.Customer.FullName; 
-                            ws.Cells[startRow, 9].Value = detail.Quantity;          
-                            ws.Cells[startRow, 10].Value = detail.PriceAtRent;     
-                            ws.Cells[startRow, 11].Value = lineTotal;               
-                            ws.Cells[startRow, 12].Value = vat;                    
-                            ws.Cells[startRow, 13].Value = netRevenue;           
-                            ws.Cells[startRow, 14].Value = rental.ProcessedByNavigation?.Username;
+                            ws.Cells[startRow, 8].Value = rental.Customer.FullName;
+                            ws.Cells[startRow, 9].Value = detail.Quantity;         
+                            ws.Cells[startRow, 10].Value = detail.PriceAtRent;      
+                            ws.Cells[startRow, 11].Value = lineTotal;              
+                            ws.Cells[startRow, 12].Value = vat;                     
+                            ws.Cells[startRow, 13].Value = netRevenue;             
+                            ws.Cells[startRow, 14].Value = rental.ProcessedByNavigation?.Username; 
 
                             startRow++;
                         }
 
-                        
+                        // Tính doanh thu
                         if (isReturned)
                         {
                             if (rental.TotalPrice.HasValue)
@@ -211,7 +210,7 @@ namespace GameRentalManagement.UserControls
                         }
                         else
                         {
-                            // check qua han, chua tra  thi cong them phi
+                            // Nếu chưa trả, kiểm tra quá hạn chưa
                             if (rental.DueDate < DateOnly.FromDateTime(DateTime.Now))
                             {
                                 int overdueDays = DateOnly.FromDateTime(DateTime.Now).DayNumber - rental.DueDate.DayNumber;
@@ -220,16 +219,16 @@ namespace GameRentalManagement.UserControls
                             }
                             else
                             {
-                                
+                                // Chưa quá hạn thì không cộng thêm
                                 totalNetRevenue += rentalTotal;
                             }
                         }
                     }
 
-                    
+                  
                     ws.Cells[$"I6:L{startRow - 1}"].Style.Numberformat.Format = "#,##0";
 
-                    // Tổng kết
+               
                     ws.Cells[startRow + 1, 16].Value = "Total Rentals:";
                     ws.Cells[startRow + 1, 17].Value = totalRentals;
 

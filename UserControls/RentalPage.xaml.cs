@@ -64,7 +64,7 @@ namespace GameRentalManagement.UserControls
                 decimal overdueFee = 0;
                 decimal total = baseTotal;
 
-                // Nếu đã trả và có TotalPrice thì hiển thị TotalPrice đã lưu
+                // neu da tra hien thi total price da luu
                 if (selected.Status == "Returned" && selected.TotalPrice.HasValue)
                 {
                     total = selected.TotalPrice.Value;
@@ -117,7 +117,7 @@ namespace GameRentalManagement.UserControls
 
                 decimal total = rentalDetails.Sum(rd => rd.Quantity * rd.PriceAtRent);
 
-                // Tính phí trễ nếu ReturnDate > DueDate
+                // tinh them phi neu qua han
                 if (selected.ReturnDate > selected.DueDate)
                 {
                     int overdueDays = selected.ReturnDate.Value.DayNumber - selected.DueDate.DayNumber;
